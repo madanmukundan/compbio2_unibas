@@ -47,7 +47,7 @@ class Population:
     def find_most_recent_common_ancestor(self, individuals: List[Individual]) -> Tuple[Optional[str], int]:
         """Find the most recent common ancestor of given individuals"""
         if not individuals or len(individuals) < 2:
-            return None, -1
+            return None, -1, None
         
         # Get sets of ancestors for each individual
         ancestor_sets = []
@@ -60,11 +60,11 @@ class Population:
         common_ancestors = set.intersection(*ancestor_sets)
         
         if not common_ancestors:
-            return None, -1
+            return None, -1, None
         
         # Find the most recent common ancestor
         most_recent_gen = -1
-        most_recent_ancestor_id = None
+        most_recent_ancestor_id = False
         most_recent_ancestor = False
         
         for gen_idx, generation in enumerate(self.generations):
@@ -87,8 +87,8 @@ class Population:
     def time_to_most_recent_common_ancestor(self) -> int:
         """Calculate how many generations ago all current individuals had a common ancestor"""
         mrca_id, mrca_gen, mrca_ind = self.find_most_recent_common_ancestor(self.individuals)
-        if mrca_id is None:
-            return -1
+        if not mrca_id:
+            return -1, None
         
         current_gen = len(self.generations) - 1
         return current_gen - mrca_gen, mrca_ind

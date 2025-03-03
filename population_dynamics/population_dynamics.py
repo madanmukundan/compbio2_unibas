@@ -344,8 +344,8 @@ class PopulationSimulatorApp:
         self.root.update()
         
         # Define population sizes to analyze
-        # sizes = [5, 10, 20, 30, 40, 50]
-        sizes = [50, 100, 200, 300, 400, 500]
+        sizes = [5, 10, 20, 30, 40, 50, 60, 70, 90, 100, 200, 300, 400, 500]
+        # sizes = [50, 100, 200, 300, 400, 500]
         
         # Run analysis
         results = self.population.analyze_population_size_vs_mrca_time(sizes, repetitions=3)

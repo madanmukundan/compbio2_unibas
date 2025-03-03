@@ -269,7 +269,7 @@ class PopulationSimulatorApp:
             self.results_text.insert("end", "Please select at least 2 individuals to find their MRCA.\n")
             return
         
-        mrca_id, mrca_gen = self.population.find_most_recent_common_ancestor(self.selected_individuals)
+        mrca_id, mrca_gen, mrca_ind = self.population.find_most_recent_common_ancestor(self.selected_individuals)
         
         self.results_text.delete("1.0", "end")
         
@@ -327,7 +327,7 @@ class PopulationSimulatorApp:
             self.results_text.insert("end", f"   Genome: {ancestor.genome}\n")
     
     def show_population_mrca_time(self):
-        tmrca = self.population.time_to_most_recent_common_ancestor()
+        tmrca, = self.population.time_to_most_recent_common_ancestor()
         
         self.results_text.delete("1.0", "end")
         
@@ -344,8 +344,9 @@ class PopulationSimulatorApp:
         self.root.update()
         
         # Define population sizes to analyze
-        sizes = [5, 10, 20, 30, 40, 50, 60, 70, 90, 100, 200, 300, 400, 500]
-        # sizes = [50, 100, 200, 300, 400, 500]
+        # sizes = [5, 10, 20, 30, 40, 50, 60, 70, 90, 100, 200, 300, 400, 500]
+        # sizes = [i for i in range(1, 501, 100)]
+        sizes = [5, 10, 20, 30, 40, 50]
         
         # Run analysis
         results = self.population.analyze_population_size_vs_mrca_time(sizes, repetitions=3)

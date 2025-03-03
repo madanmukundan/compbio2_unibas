@@ -2,6 +2,8 @@ import random
 import uuid
 
 class Individual:
+    gene_letters = 'ACTG'
+
     def __init__(self, genome: str,
                  parent = None,
                  generation: int = 0,
@@ -22,7 +24,7 @@ class Individual:
         new_genome = list(self.genome)  # convert to list<char>
         for i in range(len(new_genome)):
             if random.random() < self.mutation_rate:
-                new_genome[i] = random.choice('ACTG')
+                new_genome[i] = random.choice(Individual.gene_letters)
         
         # Construct and return new mutated individual
         return Individual(
@@ -37,7 +39,23 @@ class Individual:
         # Genetic distance as just the number of different nucleaotides
         return sum(c1 != c2 for c1, c2 in zip(self.genome, other.genome))
     
+    def print_ancestor_tree(self):
+        """Print a numbered list of all ancestors including their IDs and full genomes"""
+        print(f"Ancestor tree for Individual {self.id[:6]}:")
+        print(f"0. Self: {self.id[:6]} - {self.genome}")
+        
+        for i, ancestor_id in enumerate(reversed(self.ancestors), 1):
+            if self.parent is not None and ancestor_id == self.parent.id:
+                prefix = "Parent"
+            else:
+                prefix = f"Gen -{i}"
+            print(f"{i}. {prefix}: {ancestor_id[:6]} - {self.parent.genome if self.parent else 'Unknown'}")
+    
     def __str__(self):
-        """Return first 8 digits of uuid as representation of individual"""
-        return f"Individual {self.id[:8]} (Gen {self.generation})"
+        """Return first 6 digits of uuid as representation of individual"""
+        return f"Individual {self.id[:6]} (Gen {self.generation})"
+    
+    def __repr__(self):
+        """Return detailed string representation of individual"""
+        return f"Individual ID: {self.id}\nGeneration: {self.generation}\nGenome: {self.genome}"
 

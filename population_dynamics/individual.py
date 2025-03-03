@@ -21,10 +21,13 @@ class Individual:
     
     def mutate(self) -> 'Individual':
         """Create a descendant with mutation"""
+        # Should be modified to pull from poisson distribution and 
+        # use random.choice position to then select the position
         new_genome = list(self.genome)  # convert to list<char>
-        for i in range(len(new_genome)):
-            if random.random() < self.mutation_rate:
-                new_genome[i] = random.choice(Individual.gene_letters)
+        if self.mutation_rate > 0:
+            for i in range(len(new_genome)):
+                if random.random() < self.mutation_rate:
+                    new_genome[i] = random.choice(Individual.gene_letters)
         
         # Construct and return new mutated individual
         return Individual(

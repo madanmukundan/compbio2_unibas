@@ -3,6 +3,7 @@ from typing import List, Dict, Tuple, Optional
 from individual import Individual
 import concurrent.futures
 import numpy as np
+import itertools
 
 class Population:
     def __init__(self,
@@ -36,7 +37,6 @@ class Population:
         
         # Select parents (with replacement) and create offspring
         parents = random.choices(self.individuals, k=new_size)  # with replacement
-        # parents = random.sample(self.individuals, k=new_size) # without replacement, k cannot be larger than len(self.individuals)
         new_generation = [parent.mutate() for parent in parents]
         
         self.individuals = new_generation
@@ -56,7 +56,7 @@ class Population:
             ancestors.add(individual.id)  # Include the individual itself
             ancestor_sets.append(ancestors)
         
-        # Find common ancestors, set for best quick comparison
+        # Find common ancestors, set intersection
         common_ancestors_ids = set.intersection(*ancestor_sets)
         
         if not common_ancestors_ids:
@@ -70,12 +70,12 @@ class Population:
         # Since full ancestor Individual not saved, parse generations lists to find the MRCA
         for gen_idx, generation in reversed(list(enumerate(self.generations))):
             for individual in generation:
-                # Technically is BFS dummy search but compares to set so O(n) for individuals
+                # Technically is BFS dummy search but compares to set so O(n) for every individual
                 if individual.id in common_ancestors_ids and gen_idx > most_recent_gen:
                     most_recent_gen = gen_idx
                     most_recent_ancestor_id = individual.id
                     most_recent_ancestor = individual
-                    # Short circuit after searching from most recent
+                    # Short circuit after searching from most recent, only hits once :(
                     return most_recent_ancestor_id, most_recent_gen, most_recent_ancestor
 
         return None, -1, None
@@ -117,13 +117,14 @@ class Population:
                         genome_length=genome_length,
                         mutation_rate=mutation_rate)
         
-        # Evolve for some max number of generations
-        for _ in range(max(5000,size * 3)):
+        # Evolve for some max number of generations -> 5000
+        # E_v=2N, sig=2N, should 
+        for _ in range(max(5000, size*10)):
             pop.get_next_generation(size)
             # Check for convergence if not continue
             tmrca, _ = pop.time_to_most_recent_common_ancestor()
             if tmrca >= 0:
-                return tmrca
+                return tmrca 
         
         return tmrca
 
@@ -158,19 +159,27 @@ class Population:
         n_individuals = len(self.individuals)
         
         # Initialize the distance matrix with zeros
-        genetic_distance = np.zeros((n_individuals, n_individuals))
-        # Initialize list for flat distances (upper triangular only)
-        flat_distances = []
+        genetic_distances = np.zeros((n_individuals, n_individuals))
         
-        # Calculate distances only for upper triangular part of the matrix
+        # Symmetric matrix of genetic distances
         for i in range(n_individuals):
             for j in range(i+1, n_individuals):
                 distance = self.individuals[i].get_genetic_distance(self.individuals[j])
-                genetic_distance[i, j] = distance
-                genetic_distance[j, i] = distance
-                flat_distances.append(distance)
+                genetic_distances[i, j] = distance
+                genetic_distances[j, i] = distance
         
-        return genetic_distance, np.array(flat_distances)
+        # Get mean of lower triangular matrix of genetic distances
+        mean_distance = np.mean(np.tril(genetic_distances, k=-1))
+        
+        return genetic_distances, mean_distance
+    
+    def get_all_individual_genomes(self) -> List[str]:
+        """Get Genomes of all individuals in the population"""
+        genomes = (individual.genome for individual in self.individuals)
+        for generation in self.generations:
+            new_genomes = (individual.genome for individual in generation)
+            genomes = itertools.chain(genomes, new_genomes)
+        return list(genomes)
     
     def __str__(self):
         current_gen = len(self.generations) - 1

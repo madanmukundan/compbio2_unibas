@@ -9,7 +9,7 @@ class Individual:
                  generation: int = 0,
                  mutation_rate: float = 0.01):
         self.id = str(uuid.uuid4())
-        self.genome = genome
+        self.genome = genome  # Haploid genome
         self.parent = parent  # Direct parent
         self.ancestors = []  # List of ancestor IDs
         self.generation = generation
@@ -21,13 +21,20 @@ class Individual:
     
     def mutate(self) -> 'Individual':
         """Create a descendant with mutation"""
-        # Should be modified to pull from poisson distribution and 
-        # use random.choice position to then select the position
+        if self.mutation_rate <= 0:
+            return Individual(
+            genome=self.genome,
+            parent=self,
+            generation=self.generation + 1,
+            mutation_rate=self.mutation_rate
+            )
+        
         new_genome = list(self.genome)  # convert to list<char>
-        if self.mutation_rate > 0:
-            for i in range(len(new_genome)):
-                if random.random() < self.mutation_rate:
-                    new_genome[i] = random.choice(Individual.gene_letters)
+        # Should be modified to pull from poisson distribution and 
+        # use random.choice position to then select the position to mutate
+        for i in range(len(new_genome)):
+            if random.random() < self.mutation_rate:
+                new_genome[i] = random.choice(Individual.gene_letters)
         
         # Construct and return new mutated individual
         return Individual(
@@ -41,6 +48,17 @@ class Individual:
         """Calculate genetic distance (number of different characters)"""
         # Genetic distance as just the number of different nucleaotides
         return sum(c1 != c2 for c1, c2 in zip(self.genome, other.genome))
+    
+    @staticmethod
+    def calculate_genetic_distance(genomes: list) -> dict:
+        """Calculate genetic distance between all pairs of individuals"""
+        distances = {}
+        for i, g1 in enumerate(genomes):
+            for j, g2 in enumerate(genomes):
+                if i >= j:  # lower triangular matrix as dict
+                    continue
+                distances[(g1, g2)] = sum(c1 != c2 for c1, c2 in zip(g1, g2))
+        return distances
     
     def print_ancestor_tree(self):
         """Print a numbered list of all ancestors including their IDs and full genomes"""

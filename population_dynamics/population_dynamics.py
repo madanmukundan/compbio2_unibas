@@ -290,11 +290,17 @@ class PopulationSimulatorApp:
             self.results_text.insert("end", f"\nTime to MRCA: {time_to_mrca} generations ago\n")
     
     def calculate_genetic_distance(self):
-        if len(self.selected_individuals) != 2:
+        numel = len(self.selected_individuals)
+        if numel != 0 or numel != 2:
             self.results_text.delete("1.0", "end")
-            self.results_text.insert("end", "Please select exactly 2 individuals to calculate genetic distance.\n")
+            self.results_text.insert("end", "Please select either exactly 2 individuals to calculate genetic distance.\n" + \
+                                    "or zero individuals to calculate across the population." )
             return
-        
+        elif numel==0:
+            self.results_text.delete("1.0", "end")
+            self.results_text.insert("end", "Calculating genetic distance across the entire population.\n")
+            
+
         ind1, ind2 = self.selected_individuals
         distance = ind1.get_genetic_distance(ind2)
         
@@ -327,7 +333,7 @@ class PopulationSimulatorApp:
             self.results_text.insert("end", f"   Genome: {ancestor.genome}\n")
     
     def show_population_mrca_time(self):
-        tmrca, = self.population.time_to_most_recent_common_ancestor()
+        tmrca,tmrca_individual = self.population.time_to_most_recent_common_ancestor()
         
         self.results_text.delete("1.0", "end")
         
@@ -336,6 +342,7 @@ class PopulationSimulatorApp:
             self.results_text.insert("end", "This might be because the population is from the initial generation.\n")
         else:
             self.results_text.insert("end", f"Time to Most Recent Common Ancestor for the entire population: {tmrca} generations ago\n")
+            self.results_text.insert("end", f"{repr(tmrca_individual)}")
     
     def show_size_mrca_relationship(self):
         self.results_text.delete("1.0", "end")
@@ -346,20 +353,21 @@ class PopulationSimulatorApp:
         # Define population sizes to analyze
         # sizes = [5, 10, 20, 30, 40, 50, 60, 70, 90, 100, 200, 300, 400, 500]
         # sizes = [i for i in range(1, 501, 100)]
-        sizes = [5, 10, 20, 30, 40, 50]
+        # sizes = [i for i in range(5, 51, 10)]
+        sizes = [i for i in range(100, 301, 100)]
         
         # Run analysis
-        results = self.population.analyze_population_size_vs_mrca_time(sizes, repetitions=3)
+        averages, _ = self.population.analyze_population_size_vs_mrca_time(sizes, repetitions=3)
         
         # Display results
         self.results_text.delete("1.0", "end")
         self.results_text.insert("end", "Relationship Between Population Size and TMRCA:\n\n")
         
-        for size, avg_time in results.items():
+        for size, avg_time in averages.items():
             self.results_text.insert("end", f"Population Size {size}: Average TMRCA = {avg_time:.2f} generations\n")
         
         # Create and display plot
-        self.create_relationship_plot(results)
+        self.create_relationship_plot(averages)
     
     def create_relationship_plot(self, data):
         # Clear previous plot
@@ -367,7 +375,7 @@ class PopulationSimulatorApp:
             self.plot_canvas.get_tk_widget().destroy()
         
         # Create figure and axis
-        fig, ax = plt.subplots(figsize=(10, 4))
+        fig, ax = plt.subplots(figsize=(8, 5))
         
         sizes = list(data.keys())
         times = [data[size] for size in sizes]

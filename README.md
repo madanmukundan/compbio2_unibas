@@ -1,4 +1,4 @@
-# compbio2_unibas
+# compbio2_unibas Spring 2025 Semester
 
 ### UniBasel Computational Biology 2 Code
-* Jupyter notebooks from Spring 2025 Semester
+- Lectures, projects, and jupyter notebooks

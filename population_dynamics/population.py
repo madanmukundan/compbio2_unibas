@@ -72,7 +72,7 @@ class Population:
             for individual in generation:
                 # Technically is BFS dummy search but compares to set so O(n) for every individual
                 if individual.id in common_ancestors_ids and gen_idx > most_recent_gen:
-                    most_recent_gen = gen_idx
+                    most_recent_gen = gen_idx  # correctly goes back to front
                     most_recent_ancestor_id = individual.id
                     most_recent_ancestor = individual
                     # Short circuit after searching from most recent, only hits once :(

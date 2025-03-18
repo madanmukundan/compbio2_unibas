@@ -119,15 +119,22 @@ class Population:
         
         # Evolve for some max number of generations -> 5000
         # E_v=2N, sig=2N, should 
-        for _ in range(max(5000, size*10)):
+        # for _ in range(max(5000, size*10)):
+        #     pop.get_next_generation(size)
+        #     # Check for convergence if not continue
+        #     tmrca, _ = pop.time_to_most_recent_common_ancestor()
+        #     if tmrca >= 0:
+        #         return tmrca 
+
+        for _ in range(round(size*5)):
             pop.get_next_generation(size)
             # Check for convergence if not continue
-            tmrca, _ = pop.time_to_most_recent_common_ancestor()
-            if tmrca >= 0:
-                return tmrca 
-        
-        return tmrca
 
+        tmrca, _ = pop.time_to_most_recent_common_ancestor()
+
+        # will return -1 if non-convergence
+        return tmrca 
+        
     def analyze_population_size_vs_mrca_time(self, sizes: List[int], repetitions: int = 5) -> Dict:
         """Analyze relationship between population size and time to MRCA using parallel processing"""
         results = {pop_size: [] for pop_size in sizes}

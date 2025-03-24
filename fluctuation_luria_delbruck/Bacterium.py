@@ -5,7 +5,7 @@ import numpy as np
 class Bacterium:
 
     def __init__(self, phenotype="sensitive",
-                 mutation_rate=1e-7,
+                 mutation_rate=1e-2,
                  lifespan=20,
                  lifespan_distribution="fixed",
                  lifespan_mean=20,
@@ -77,7 +77,12 @@ class Bacterium:
             
         # Mutants have an increased survival probability
         if self.mutant_status > 0:
-            survival_prob = self.base_survival_prob * self.mutation_survival_boost
+            # If default survival is zero, interprete mutant status (1) = survives
+            if self.base_survival_prob == 0:
+                survival_prob = 1
+            else:
+                # Otherwise probability to survive is determined based on mutation rate
+                survival_prob = self.base_survival_prob * self.mutation_survival_boost
         else:
             survival_prob = self.base_survival_prob
             

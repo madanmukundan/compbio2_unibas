@@ -11,7 +11,7 @@ class LuriaDelbruckSimulation:
     def __init__(self, start_pop_size=10,
                  end_pop_size=1000,
                  division_distribution="poisson",
-                 mutation_rate=1e-6,
+                 mutation_rate=1e-2,
                  lifespan=20,
                  lifespan_distribution="fixed",
                  lifespan_mean=20,
@@ -23,6 +23,7 @@ class LuriaDelbruckSimulation:
                  base_survival_prob=0.001,
                  mutation_survival_boost=10.0):
 
+        # Passed up to Bacterium Constructor
         self.start_pop_size = start_pop_size
         self.end_pop_size = end_pop_size
         self.division_distribution = division_distribution
@@ -44,9 +45,9 @@ class LuriaDelbruckSimulation:
 
         # Initialize population and event queue
         self.population = []
-        self.event_queue = queue.PriorityQueue()  # use time step for scheduling divides/deaths
+        self.event_queue = queue.PriorityQueue()  # use time step for scheduling priority
         self.current_time = 0  # curent time step as int
-        self.next_event_id = 0  # ensure FIFO for events with same time
+        self.next_event_id = 0  # ensure fifo for events with same time
 
         # Statistics
         self.population_history = []  # Size of population at each event
@@ -93,7 +94,7 @@ class LuriaDelbruckSimulation:
         # Run the simulation
         while len(self.population) < self.end_pop_size and not self.event_queue.empty():
 
-            # Get next event in event queue
+            # Get next event in event queue, toss event id
             event_time, _, (event_type, bacterium_idx) = self.event_queue.get()
             self.current_time = event_time
 
@@ -133,11 +134,12 @@ class LuriaDelbruckSimulation:
             self.population_history.append(len(active_population))
             self.mutant_history.append(mutant_count)
 
-            # Call the callback with progress updates if provided
+            # For GUI call callback with progress updates if provided
             if callback and len(self.population_history) % 100 == 0:
                 callback(len(active_population), mutant_count)
 
         # Now evaluate survival for all living bacteria at the end of simulation
+        # Remove none
         active_population = [b for b in self.population if b is not None]
         
         # Determine survival for each bacterium

@@ -32,7 +32,7 @@ class Bacterium:
         
         # Division parameters
         self.division_distribution = division_distribution
-        self.division_mean = division_mean
+        self.division_mean = division_mean  # exponential beta scale also uses division mean
         self.division_std = division_std
         self.division_lambda = division_lambda
         
@@ -55,6 +55,10 @@ class Bacterium:
             return max(1, int(np.random.normal(self.division_mean, self.division_std)))
         elif self.division_distribution == "poisson":
             return max(1, np.random.poisson(self.division_lambda))
+        # add support for exponential distribution
+        elif self.division_distribution == "exponential":
+            # Ensure positive value with floor at 1
+            return max(1, int(np.random.exponential(self.division_mean)))
         else:
             # Default to fixed value if distribution not recognized
             return 10
@@ -66,6 +70,13 @@ class Bacterium:
             return max(1, int(np.random.normal(self.lifespan_mean, self.lifespan_std)))
         elif self.lifespan_distribution == "poisson":
             return max(1, np.random.poisson(self.lifespan_lambda))
+        # add support for exponential
+        elif self.lifespan_distribution == "exponential":
+            # Ensure positive value with floor at 1
+            return max(1, int(np.random.exponential(self.lifespan_mean)))
+        elif self.lifespan_distribution == "fixed":
+            # Fixed lifespan
+            return self.lifespan
         else:
             # Default to fixed value
             return self.lifespan

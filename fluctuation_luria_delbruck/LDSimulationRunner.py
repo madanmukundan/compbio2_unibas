@@ -37,7 +37,7 @@ class LuriaDelbruckSimulation:
         self.mutation_survival_boost = mutation_survival_boost
 
         # Gaussian distribution paramenters
-        self.division_mean = division_mean
+        self.division_mean = division_mean # also used as exponential Beta scale
         self.division_std = division_std
 
         # Poisson distribution parameters

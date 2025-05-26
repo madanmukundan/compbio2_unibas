@@ -81,6 +81,7 @@ pandas @ file:///home/conda/feedstock_root/build_artifacts/pandas_1726878398774/
 pandocfilters==1.5.1
 parso==0.8.4
 pexpect==4.9.0
+phylo-treetime==0.11.4
 pillow==11.1.0
 pip @ file:///home/conda/feedstock_root/build_artifacts/pip_1739142759263/work
 pkgutil-resolve-name @ file:///home/conda/feedstock_root/build_artifacts/pkgutil-resolve-name_1733344503739/work
@@ -110,9 +111,10 @@ rpds-py @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_rp
 ruamel-yaml @ file:///home/conda/feedstock_root/build_artifacts/ruamel.yaml_1736248022260/work
 ruamel-yaml-clib @ file:///home/conda/feedstock_root/build_artifacts/ruamel.yaml.clib_1728724455198/work
 scipy==1.15.2
+seaborn==0.13.2
 send2trash==1.8.3
 seqlogo==5.29.9
-setuptools==75.8.0
+setuptools==80.8.0
 six @ file:///home/conda/feedstock_root/build_artifacts/six_1733380938961/work
 sniffio==1.3.1
 soupsieve==2.6
@@ -122,7 +124,7 @@ tabulate==0.9.0
 terminado==0.18.1
 tinycss2==1.4.0
 tomli==2.2.1
-tornado==6.4.2
+tornado==6.5.1
 traitlets==5.14.3
 tskit @ file:///home/conda/feedstock_root/build_artifacts/tskit_1729107820424/work
 types-python-dateutil==2.9.0.20241206

@@ -104,7 +104,7 @@ pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1706886791323/work
 pyyaml==6.0.2
 pyzmq==26.2.1
 referencing @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_referencing_1737836872/work
-requests==2.32.3
+requests==2.32.4
 rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
 rpds-py @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_rpds-py_1740153211/work
